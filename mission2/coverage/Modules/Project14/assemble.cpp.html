@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>assemble.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+#include "Car.cpp"
+
+#if _DEBUG
+
+#include &lt;gmock/gmock.h&gt;
+
+int main()
+<span style = "background-color:#dfd">{
+	testing::InitGoogleMock();
+	return RUN_ALL_TESTS();
+}</span>
+
+#else
+
+void runProducedCar(const std::shared_ptr&lt;Car&gt;&amp; car);
+
+class CarBuilder {
+public:
+    std::unique_ptr&lt;Car&gt; build() {
+        selectCarType();
+        buildEngine();
+        buildBrake();
+        buildSteering();
+        return std::move(m_building_car);
+    }
+    void selectCarType() {
+        std::cout&lt;&lt;CLEAR_SCREEN;
+
+        std::cout&lt;&lt;"        ______________\n";
+        std::cout&lt;&lt;"       /|            | \n";
+        std::cout&lt;&lt;"  ____/_|_____________|____\n";
+        std::cout&lt;&lt;" |                      O  |\n";
+        std::cout&lt;&lt;" '-(@)----------------(@)--'\n";
+        std::cout&lt;&lt;"===============================\n";
+        std::cout&lt;&lt;"ì´ë¤ ì°¨ë íìì ì íí ê¹ì?\n";
+        std::cout&lt;&lt;"1. Sedan\n";
+        std::cout&lt;&lt;"2. SUV\n";
+        std::cout&lt;&lt;"3. Truck\n";
+        std::cout &lt;&lt; "Debug: "&lt;&lt; std::endl;
+        auto answer = getInput();
+        std::cout &lt;&lt; "Debug: answer: " &lt;&lt; answer &lt;&lt; std::endl;
+        if (answer == 1) {
+            std::cout &lt;&lt; "ì°¨ë íìì¼ë¡ Sedanì ì ííì¨ìµëë¤.\n";
+            m_building_car = std::make_unique&lt;Sedan&gt;();
+            return;
+        }
+        if (answer == 2) {
+            std::cout &lt;&lt; "ì°¨ë íìì¼ë¡ SUVì ì ííì¨ìµëë¤.\n";
+            m_building_car = std::make_unique&lt;SUV&gt;();
+            return;
+        }
+        if (answer == 3) {
+            std::cout &lt;&lt; "ì°¨ë íìì¼ë¡ Truckì ì ííì¨ìµëë¤.\n";
+            m_building_car = std::make_unique&lt;Truck&gt;();
+            return;
+        }
+        std::cout&lt;&lt;"ERROR :: ì°¨ë íìì 1 ~ 3 ë²ìë§ ì í ê°ë¥\n";
+        delay(800);
+        selectCarType();
+    }
+    void buildEngine() {
+        std::cout&lt;&lt;CLEAR_SCREEN;
+        std::cout&lt;&lt;"ì´ë¤ ìì§ì íì¬í ê¹ì?\n";
+        std::cout&lt;&lt;"0. ë¤ë¡ê°ê¸°\n";
+        std::cout&lt;&lt;"1. GM\n";
+        std::cout&lt;&lt;"2. TOYOTA\n";
+        std::cout&lt;&lt;"3. WIA\n";
+        std::cout&lt;&lt;"4. ê³ ì¥ë ìì§\n";
+
+        auto answer = getInput();
+        if (answer == 0) {
+            selectCarType();
+            return;
+        }
+        if (answer == 1) {
+            std::cout &lt;&lt; "GM ìì§ì ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setEngine(std::make_unique&lt;GMEngine&gt;());
+            return;
+        }
+        if (answer == 2) {
+            std::cout &lt;&lt; "TOYOTA ìì§ì ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+            return;
+        }
+        if (answer == 3) {
+            std::cout &lt;&lt; "WIA ìì§ì ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setEngine(std::make_unique&lt;WiaEngine&gt;());
+            return;
+        }
+        if (answer == 4) {
+            std::cout &lt;&lt; "ê³ ì¥ë ìì§ì ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setEngine(std::make_unique&lt;BrokenEngine&gt;());
+            return;
+        }
+        std::cout &lt;&lt; "Debug: answer: " &lt;&lt; answer &lt;&lt; std::endl;
+        std::cout&lt;&lt;"ERROR :: ìì§ì 1 ~ 4 ë²ìë§ ì í ê°ë¥\n";
+        delay(800);
+        buildEngine();
+    }
+    void buildBrake() {
+        std::cout&lt;&lt;CLEAR_SCREEN;
+        std::cout&lt;&lt;"ì´ë¤ ì ëì¥ì¹ë¥¼ ì íí ê¹ì?\n";
+        std::cout&lt;&lt;"0. ë¤ë¡ê°ê¸°\n";
+        std::cout&lt;&lt;"1. MANDO\n";
+        std::cout&lt;&lt;"2. CONTINENTAL\n";
+        std::cout&lt;&lt;"3. BOSCH\n";
+        auto answer = getInput();
+        if (answer == 0) {
+            buildEngine();
+            return;
+        }
+        if (answer == 1) {
+            std::cout &lt;&lt; "MANDO ì ëì¥ì¹ë¥¼ ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setBrakeSystem(std::make_unique&lt;MandoBrake&gt;());
+            return;
+        }
+        if (answer == 2) {
+            std::cout &lt;&lt; "CONTINENTAL ì ëì¥ì¹ë¥¼ ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+            return;
+        }
+        if (answer == 3) {
+            std::cout &lt;&lt; "BOSCH ì ëì¥ì¹ë¥¼ ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+            return;
+        }
+        std::cout&lt;&lt;"ERROR :: ì ëì¥ì¹ë 1 ~ 3 ë²ìë§ ì í ê°ë¥\n";
+        delay(800);
+        buildBrake();
+    }
+    void buildSteering() {
+        std::cout&lt;&lt;CLEAR_SCREEN;
+        std::cout&lt;&lt;"ì´ë¤ ì¡°í¥ì¥ì¹ë¥¼ ì íí ê¹ì?\n";
+        std::cout&lt;&lt;"0. ë¤ë¡ê°ê¸°\n";
+        std::cout&lt;&lt;"1. BOSCH\n";
+        std::cout&lt;&lt;"2. MOBIS\n";
+        auto answer = getInput();
+        if (answer == 0) {
+            buildBrake();
+            return;
+        }
+        if (answer == 1) {
+            std::cout &lt;&lt; "BOSCH ì¡°í¥ì¥ì¹ë¥¼ ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+            return;
+        }
+        if (answer == 2) {
+            std::cout &lt;&lt; "MOBIS ì¡°í¥ì¥ì¹ë¥¼ ì ííì¨ìµëë¤.\n";
+            m_building_car-&gt;setSteeringSystem(std::make_unique&lt;MobisSteering&gt;());
+            return;
+        }
+        std::cout&lt;&lt;"ERROR :: ì¡°í¥ì¥ì¹ë 1 ~ 2 ë²ìë§ ì í ê°ë¥\n";
+        delay(800);
+        buildSteering();
+    }
+private:
+    std::unique_ptr&lt;Car&gt; m_building_car;
+};
+
+int main()
+{
+    CarBuilder builder;
+
+    while (1)
+    {
+        std::shared_ptr&lt;Car&gt; car = builder.build();
+        std::cout&lt;&lt;CLEAR_SCREEN;
+        std::cout&lt;&lt;"ë©ì§ ì°¨ëì´ ìì±ëììµëë¤.\n";
+        std::cout&lt;&lt;"ì´ë¤ ëìì í ê¹ì?\n";
+        std::cout&lt;&lt;"0. ì²ì íë©´ì¼ë¡ ëìê°ê¸°\n";
+        std::cout&lt;&lt;"1. RUN\n";
+        std::cout&lt;&lt;"2. Test\n";
+        std::cout&lt;&lt;"===============================\n";
+
+        auto answer = getInput();
+        // ì²ìì¼ë¡ ëìê°ê¸°
+        if (answer == 0) {
+            continue;
+        }
+
+        if (!(answer &gt;= 0 &amp;&amp; answer &lt;= 2))
+        {
+            std::cout&lt;&lt;"ERROR :: Run ëë Test ì¤ íëë¥¼ ì í íì\n";
+            delay(800);
+            answer = getInput();
+            continue;
+        }
+
+        // ì´ì ì¼ë¡ ëìê°ê¸°
+        if (answer == 0) {
+            continue;
+        }
+        if (answer == 1) {
+            runProducedCar(car);
+            delay(2000);
+        }
+        else if (answer == 2)
+        {
+            std::cout&lt;&lt;"Test...\n";
+            delay(1500);
+            car-&gt;testCar();
+            delay(2000);
+        }
+    }
+}
+
+void runProducedCar(const std::shared_ptr&lt;Car&gt;&amp; car)
+{
+    if (!car) {
+        throw std::runtime_error("Invalid car");
+    } 
+    if (!car-&gt;isWorkingCar()) {
+        std::cout&lt;&lt;"ìëì°¨ê° ëìëì§ ììµëë¤\n";
+        return;
+    }
+    if (car-&gt;hasBrokenEngine()) {
+        std::cout&lt;&lt;"ìì§ì´ ê³ ì¥ëììµëë¤.\n";
+        std::cout&lt;&lt;"ìëì°¨ê° ìì§ì´ì§ ììµëë¤.\n";
+        return;
+    }
+    car-&gt;run();
+}
+
+#endif</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

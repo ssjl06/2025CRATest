@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Car.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#pragma once
+
+#include &lt;string&gt;
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;chrono&gt;
+#define CLEAR_SCREEN "\033[H\033[2J"
+
+inline void delay(int ms)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+inline int getInput() {
+    char buf[100];
+    std::cout &lt;&lt; "INPUT &gt; ";
+    fgets(buf, sizeof(buf), stdin);
+
+    // ìí° ê°íë¬¸ì ì ê±°
+    char* context = nullptr;
+    strtok_s(buf, "\r", &amp;context);
+    strtok_s(buf, "\n", &amp;context);
+
+    if (!strcmp(buf, "exit"))
+    {
+        std::cout &lt;&lt; "ë°ì´ë°ì´\n";
+        exit(0);
+    }
+
+    // ì«ìë¡ ë ëëµì¸ì§ íì¸
+    char* checkNumber;
+    int answer = strtol(buf, &amp;checkNumber, 10); // ë¬¸ìì´ì 10ì§ìë¡ ë³í
+
+    // ìë ¥ë°ì ë¬¸ìê° ì«ìê° ìëë¼ë©´
+    if (*checkNumber != '\0')
+    {
+        std::cout &lt;&lt; "ERROR :: ì«ìë§ ìë ¥ ê°ë¥\n";
+        delay(800);
+        answer = getInput();
+    }
+    return answer;
+}
+
+enum class Brand {
+    GM,
+    TOYOTA,
+    WIA,
+    MANDO,
+    CONTINENTAL,
+    BOSCH,
+    MOBIS,
+    Unknown
+};
+
+enum class CarType {
+    Sedan,
+    SUV,
+    Truck,
+    Unknown
+};
+
+inline std::string getBrandName(const Brand&amp; brand) {
+    switch (brand)
+    {
+    case Brand::GM:
+        return "GM";
+    case Brand::TOYOTA:
+        return "Toyota";
+    case Brand::MANDO:
+        return "Mando";
+    case Brand::CONTINENTAL:
+        return "Continental";
+    case Brand::BOSCH:
+        return "Bosch";
+    default:
+        return "Unknown";
+    }
+    return "Unknown";
+}
+
+inline std::string getCarTypeName(const CarType&amp; type) {
+    switch (type)
+    {
+    case CarType::Sedan:
+        return "Sedan";
+    case CarType::SUV:
+        return "SUV";
+    case CarType::Truck:
+        return "Truck";
+    default:
+        return "Unknown";
+    }
+    return "Unknown";
+}
+
+class Module {
+public:
+<span style = "background-color:#dfd">    Module(const Brand&amp; brand) : m_brand(brand) {}
+    Brand getBrand() const { return m_brand; }</span>
+private:
+    Brand m_brand = Brand::Unknown;
+};
+
+/* Engine */
+class Engine : public Module {
+public:
+<span style = "background-color:#dfd">    Engine(const Brand&amp; brand, bool broken = false): Module(brand), m_broken(broken) {}</span>
+    bool isBroken() {
+        return m_broken;
+    }
+    bool m_broken;
+};
+
+class GMEngine : public Engine {
+public:
+    GMEngine() : Engine(Brand::GM) {}
+};
+
+class ToyotaEngine : public Engine {
+public:
+<span style = "background-color:#dfd">    ToyotaEngine() : Engine(Brand::TOYOTA) {}</span>
+};
+
+class WiaEngine : public Engine {
+public:
+<span style = "background-color:#dfd">    WiaEngine() : Engine(Brand::WIA) {}</span>
+};
+
+class BrokenEngine : public Engine {
+public:
+    BrokenEngine() : Engine(Brand::Unknown, true) {}
+};
+
+/* BrakeSystem */
+class BrakeSystem : public Module {
+public:
+<span style = "background-color:#dfd">    BrakeSystem(const Brand&amp; brand) : Module(brand) {}</span>
+};
+
+class MandoBrake : public BrakeSystem {
+public:
+<span style = "background-color:#dfd">    MandoBrake() : BrakeSystem(Brand::MANDO) {}</span>
+};
+
+class ContinentalBrake : public BrakeSystem {
+public:
+<span style = "background-color:#dfd">    ContinentalBrake() : BrakeSystem(Brand::CONTINENTAL) {}</span>
+};
+
+class BoschBrake : public BrakeSystem {
+public:
+<span style = "background-color:#dfd">    BoschBrake() : BrakeSystem(Brand::BOSCH) {}</span>
+};
+
+/* SteeringSystem */
+class SteeringSystem : public Module {
+public:
+<span style = "background-color:#dfd">    SteeringSystem(const Brand&amp; brand) : Module(brand) {}</span>
+};
+
+class BoschSteering : public SteeringSystem {
+public:
+<span style = "background-color:#dfd">    BoschSteering() : SteeringSystem(Brand::BOSCH) {}</span>
+};
+
+class MobisSteering : public SteeringSystem {
+public:
+<span style = "background-color:#dfd">    MobisSteering() : SteeringSystem(Brand::MOBIS) {}</span>
+};
+
+/* Car */
+class Car {
+public:
+<span style = "background-color:#dfd">    Car(const CarType&amp; car_type = CarType::Unknown): m_car_type(car_type) {}
+    Car&amp; setEngine(std::unique_ptr&lt;Engine&gt;&amp;&amp; engine) {
+        m_engine = std::move(engine);
+        return *this;
+    }
+    Car&amp; setBrakeSystem(std::unique_ptr&lt;BrakeSystem&gt;&amp;&amp; brake_system) {
+        m_brake_system = std::move(brake_system);
+        return *this;
+    }
+    Car&amp; setSteeringSystem(std::unique_ptr&lt;SteeringSystem&gt;&amp;&amp; steering_system) {
+        m_steering_system = std::move(steering_system);
+        return *this;
+    }
+    virtual bool isWorkingCar() {
+        if (!m_engine || !m_brake_system || !m_steering_system) {</span>
+<span style = "background-color:#fdd">            return false;</span>
+        }
+<span style = "background-color:#dfd">        if (m_brake_system-&gt;getBrand() == Brand::BOSCH &amp;&amp; m_steering_system-&gt;getBrand() != Brand::BOSCH) {
+            return false;</span>
+        }
+<span style = "background-color:#dfd">    }</span>
+    bool hasBrokenEngine() {
+        if (!m_engine) {
+            throw std::runtime_error("there is no engine yet");
+        }
+        return m_engine-&gt;isBroken();
+    }
+    void run()
+    {
+        if (!m_engine || !m_brake_system || !m_steering_system) {
+            throw std::runtime_error("The car has not completed yet");
+        }
+        std::cout &lt;&lt; "Car Type : ";
+        std::cout&lt;&lt;getCarTypeName(m_car_type)&lt;&lt;"\n";
+
+        std::cout&lt;&lt;"Engine : ";
+        std::cout&lt;&lt;getBrandName(m_engine-&gt;getBrand())&lt;&lt;"\n";
+
+        std::cout&lt;&lt;"Brake : ";
+        std::cout&lt;&lt;getBrandName(m_brake_system-&gt;getBrand())&lt;&lt;"\n";
+
+        std::cout&lt;&lt;"Steering : ";
+        std::cout&lt;&lt;getBrandName(m_steering_system-&gt;getBrand())&lt;&lt;"\n";
+
+        std::cout&lt;&lt;"ìëì°¨ê° ëìë©ëë¤.\n";
+    }
+<span style = "background-color:#dfd">    virtual void testCar() {
+        if (m_brake_system-&gt;getBrand() == Brand::BOSCH &amp;&amp; m_steering_system-&gt;getBrand() != Brand::BOSCH) {
+            std::cout &lt;&lt; "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\nBoschì ëì¥ì¹ìë Boschì¡°í¥ì¥ì¹ ì´ì¸ ì¬ì© ë¶ê°\n";
+            return;</span>
+        }
+<span style = "background-color:#dfd">        std::cout &lt;&lt; "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : PASS\n";
+    }</span>
+protected:
+    std::unique_ptr&lt;Engine&gt; m_engine;
+    std::unique_ptr&lt;BrakeSystem&gt; m_brake_system;
+    std::unique_ptr&lt;SteeringSystem&gt; m_steering_system;
+    CarType m_car_type;
+};
+
+class Sedan : public Car {
+public:
+<span style = "background-color:#dfd">    Sedan() : Car(CarType::Sedan) {}
+    virtual bool isWorkingCar() override {
+        if (m_brake_system-&gt;getBrand() == Brand::CONTINENTAL) {
+            return false;</span>
+        }
+<span style = "background-color:#dfd">        return Car::isWorkingCar();
+    }
+    virtual void testCar() override{
+        if (m_brake_system-&gt;getBrand() == Brand::CONTINENTAL) {
+            std::cout &lt;&lt; "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\n";
+            std::cout &lt;&lt; "Sedanìë Continentalì ëì¥ì¹ ì¬ì© ë¶ê°\n";
+            return;</span>
+        }
+<span style = "background-color:#dfd">        Car::testCar();
+    }</span>
+};
+
+class SUV : public Car {
+public:
+<span style = "background-color:#dfd">    SUV() : Car(CarType::SUV) {}
+    virtual bool isWorkingCar() override {
+        if (m_engine-&gt;getBrand() == Brand::TOYOTA) {
+            return false;</span>
+        }
+<span style = "background-color:#dfd">        return Car::isWorkingCar();
+    }
+    virtual void testCar() override{
+        if (m_engine-&gt;getBrand() == Brand::TOYOTA) {
+            std::cout&lt;&lt;"ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\n";
+            std::cout&lt;&lt;"SUVìë TOYOTAìì§ ì¬ì© ë¶ê°\n";
+            return;</span>
+        }
+<span style = "background-color:#fdd">        Car::testCar();</span>
+<span style = "background-color:#dfd">    }</span>
+};
+
+class Truck : public Car {
+public:
+<span style = "background-color:#dfd">    Truck() : Car(CarType::Truck) {}
+    virtual bool isWorkingCar() override {
+        if (m_engine-&gt;getBrand() == Brand::WIA) {
+            return false;</span>
+        }
+<span style = "background-color:#dfd">        if (m_brake_system-&gt;getBrand() == Brand::MANDO) {
+            return false;</span>
+        }
+<span style = "background-color:#dfd">        return Car::isWorkingCar();
+    }
+    virtual void testCar() override{
+        if (m_engine-&gt;getBrand() == Brand::WIA) {
+            std::cout&lt;&lt;"ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\n";
+            std::cout&lt;&lt;"Truckìë WIAìì§ ì¬ì© ë¶ê°\n";
+            return;</span>
+        }
+<span style = "background-color:#dfd">        if (m_brake_system-&gt;getBrand() == Brand::MANDO) {
+            std::cout&lt;&lt;"ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\n";
+            std::cout&lt;&lt;"Truckìë Mandoì ëì¥ì¹ ì¬ì© ë¶ê°\n";
+            return;</span>
+        }
+<span style = "background-color:#fdd">        Car::testCar();</span>
+<span style = "background-color:#dfd">    }</span>
+};
+</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

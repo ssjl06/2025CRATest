@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>car_test.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "gmock/gmock.h"
+#include "Car.cpp"
+#include &lt;iostream&gt;
+
+using namespace testing;
+
+//TEST(ValidityTest, TC0) {
+//	Car car;
+//	EXPECT_EQ(false, car.isWorkingCar());
+//}
+<span style = "background-color:#dfd">TEST(ValidityTest, TC1) {
+	Sedan sedan;
+	EXPECT_EQ(false, sedan.isWorkingCar());</span>
+<span style = "background-color:#fdd">}</span>
+<span style = "background-color:#dfd">TEST(ValidityTest, TC2) {
+	SUV suv;
+	EXPECT_EQ(false, suv.isWorkingCar());</span>
+<span style = "background-color:#fdd">}</span>
+<span style = "background-color:#dfd">TEST(ValidityTest, TC3) {
+	Truck truck;
+	EXPECT_EQ(false, truck.isWorkingCar());</span>
+<span style = "background-color:#fdd">}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest1, TC1) {
+	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;MobisSteering&gt;());
+	EXPECT_EQ(false, sedan.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest1, TC1_1) {
+	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(true, sedan.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC1) {
+	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(false, sedan.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC1_1) {
+	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(true, sedan.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC2) {
+	SUV suv;
+	suv.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	suv.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	suv.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(false, suv.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC2_1) {
+	SUV suv;
+	suv.setEngine(std::make_unique&lt;WiaEngine&gt;());
+	suv.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	suv.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(true, suv.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC3) {
+	Truck truck;
+	truck.setEngine(std::make_unique&lt;WiaEngine&gt;());
+	truck.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	truck.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(false, truck.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC3_1) {
+	Truck truck;
+	truck.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	truck.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	truck.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(true, truck.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC4) {
+	Truck truck;
+	truck.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	truck.setBrakeSystem(std::make_unique&lt;MandoBrake&gt;());
+	truck.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(false, truck.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConstraintTest2, TC4_1) {
+	Truck truck;
+	truck.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	truck.setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+	truck.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	EXPECT_EQ(true, truck.isWorkingCar());
+}</span>
+
+<span style = "background-color:#dfd">TEST(CarTest, TC1) {
+	std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+	std::ostringstream strCout;
+	std::cout.rdbuf(strCout.rdbuf());</span>
+
+<span style = "background-color:#dfd">	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;MobisSteering&gt;());
+	sedan.testCar();</span>
+
+<span style = "background-color:#dfd">	std::cout.rdbuf(oldCoutStreamBuf);</span>
+
+<span style = "background-color:#dfd">	std::string expected = "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\nBoschì ëì¥ì¹ìë Boschì¡°í¥ì¥ì¹ ì´ì¸ ì¬ì© ë¶ê°\n";
+	EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}</span>
+
+<span style = "background-color:#dfd">TEST(CarTest, TC2) {
+	std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+	std::ostringstream strCout;
+	std::cout.rdbuf(strCout.rdbuf());</span>
+
+<span style = "background-color:#dfd">	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;BoschBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	sedan.testCar();</span>
+
+<span style = "background-color:#dfd">	std::cout.rdbuf(oldCoutStreamBuf);</span>
+
+<span style = "background-color:#dfd">	std::string expected = "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : PASS\n";
+	EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}</span>
+
+<span style = "background-color:#dfd">TEST(CarTest, TC3) {
+	std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+	std::ostringstream strCout;
+	std::cout.rdbuf(strCout.rdbuf());</span>
+
+<span style = "background-color:#dfd">	Sedan sedan;
+	sedan.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	sedan.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	sedan.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	sedan.testCar();</span>
+
+<span style = "background-color:#dfd">	std::cout.rdbuf(oldCoutStreamBuf);</span>
+
+<span style = "background-color:#dfd">	std::string expected = "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\nSedanìë Continentalì ëì¥ì¹ ì¬ì© ë¶ê°\n";
+	EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}</span>
+
+<span style = "background-color:#dfd">TEST(CarTest, TC4) {
+	std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+	std::ostringstream strCout;
+	std::cout.rdbuf(strCout.rdbuf());</span>
+
+<span style = "background-color:#dfd">	SUV suv;
+	suv.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	suv.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	suv.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	suv.testCar();</span>
+
+<span style = "background-color:#dfd">	std::cout.rdbuf(oldCoutStreamBuf);</span>
+
+<span style = "background-color:#dfd">	std::string expected = "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\nSUVìë TOYOTAìì§ ì¬ì© ë¶ê°\n";
+	EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}</span>
+
+<span style = "background-color:#dfd">TEST(CarTest, TC5) {
+	std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+	std::ostringstream strCout;
+	std::cout.rdbuf(strCout.rdbuf());</span>
+
+<span style = "background-color:#dfd">	Truck truck;
+	truck.setEngine(std::make_unique&lt;WiaEngine&gt;());
+	truck.setBrakeSystem(std::make_unique&lt;ContinentalBrake&gt;());
+	truck.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	truck.testCar();</span>
+
+<span style = "background-color:#dfd">	std::string expected = "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\nTruckìë WIAìì§ ì¬ì© ë¶ê°\n";
+	EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}</span>
+
+<span style = "background-color:#dfd">TEST(CarTest, TC6) {
+	std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+	std::ostringstream strCout;
+	std::cout.rdbuf(strCout.rdbuf());</span>
+
+<span style = "background-color:#dfd">	Truck truck;
+	truck.setEngine(std::make_unique&lt;ToyotaEngine&gt;());
+	truck.setBrakeSystem(std::make_unique&lt;MandoBrake&gt;());
+	truck.setSteeringSystem(std::make_unique&lt;BoschSteering&gt;());
+	truck.testCar();</span>
+
+<span style = "background-color:#dfd">	std::string expected = "ìëì°¨ ë¶í ì¡°í© íì¤í¸ ê²°ê³¼ : FAIL\nTruckìë Mandoì ëì¥ì¹ ì¬ì© ë¶ê°\n";
+	EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}</span></pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
