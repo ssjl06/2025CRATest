@@ -192,6 +192,7 @@ public:
         if (m_brake_system->getBrand() == Brand::BOSCH && m_steering_system->getBrand() != Brand::BOSCH) {
             return false;
         }
+        return true;
     }
     bool hasBrokenEngine() {
         if (!m_engine) {
